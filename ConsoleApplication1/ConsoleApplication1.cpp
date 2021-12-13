@@ -28,7 +28,7 @@ void main(void)
 
 		for(j=0;j<10;j++)
 		{
-			switch (state[j][i])
+			switch (state[i][j])
 			{
 			case 0:
 				ch = ' ';
