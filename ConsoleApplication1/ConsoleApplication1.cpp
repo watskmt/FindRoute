@@ -9,26 +9,37 @@ int main(void)
 							{0,1,0,0,0, 0,0,0,0,0},
 							{0,0,1,0,0, 0,0,0,0,0},
 							{0,0,0,1,0, 0,0,0,0,0},
-							{0,0,0,0,1, 0,0,0,0,0},
+							{0,0,0,0,0, 0,0,0,0,0},
 							{0,0,0,0,0, 1,0,0,0,0},
 
 							{0,0,0,0,0, 0,1,0,0,0},
 							{0,0,0,0,0, 0,0,1,0,0},
-							{0,0,0,0,0, 0,0,0,1,0},
+							{0,0,0,0,0, 0,0,0,0,0},
 							{0,0,0,0,0, 0,0,0,0,1},
 							{0,0,0,0,0, 0,0,0,0,0}
 	};
-
-	ShowStatus(state);
+	
+	int current_x = 0;
+	int current_y = 0;
 
 	while (key != ' ')// スペースで終了
 	{
-			key = getch();
-			// if (key == 'w')printf("↑");
-			// if (key == 'z')printf("↓");
-			// if (key == 'a')printf("←");
-			// if (key == 's')printf("→");
+		ShowStatus(state);
+		key = getch();
+		state[current_y][current_x] = -1;
+		if (current_x != 9 && state[current_y][current_x + 1] == 0)
+			current_x++;
+		else if (current_y != 9 && state[current_y + 1][current_x] == 0)
+			current_y++;
+		else if (current_x != 0 && state[current_y][current_x - 1] == 0)
+			current_x--;
+		else if (current_y != 0 && state[current_y - 1][current_x] == 0)
+			current_y--;
+		else
+			break;
+
 	}
+	ShowStatus(state);
 }
 int ShowStatus(int state[][10])
 {
