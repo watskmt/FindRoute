@@ -31,7 +31,7 @@ void main(void)
 			switch (state[i][j])
 			{
 			case 0:
-				ch = ': ';
+				ch = 'A';
 				break;
 			case -1:
 				ch = 'X';
