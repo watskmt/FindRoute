@@ -21,7 +21,12 @@ int main(void)
 	
 	int current_x = 0;
 	int current_y = 0;
+	FILE *logFile;
 
+	logFile = fopen("route.log", "w");
+	fputs("Start\n", logFile);
+	fprintf(logFile, "(%d,%d)\n", current_x, current_y);
+	
 	while (key != ' ')// スペースで終了
 	{
 		ShowStatus(state);
@@ -37,10 +42,18 @@ int main(void)
 			current_y--;
 		else
 			break;
+		fprintf(logFile, " -> セル(%d,%d)\n", current_x, current_y);
 
 	}
 	ShowStatus(state);
+
+	fclose(logFile);
 }
+
+
+
+
+
 int ShowStatus(int state[][10])
 {
 	char ch;
