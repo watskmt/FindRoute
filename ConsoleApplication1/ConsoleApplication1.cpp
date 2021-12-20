@@ -1,8 +1,14 @@
 ﻿#include <stdio.h>
 #include <conio.h>
 
-int ShowStatus(int state[][10], int x, int y);
-int ShowStatus(int state[][10], int x, int y, FILE *fp);
+typedef struct Point
+{
+	int x;
+	int y;
+}Point;
+
+int ShowStatus(int state[][10], Point p);
+int ShowStatus(int state[][10], Point p, FILE *fp);
 
 int main(void)
 {
@@ -21,35 +27,37 @@ int main(void)
 							{0,0,0,0,0, 0,0,0,0,0}
 	};
 
-	int current_x = 0;
-	int current_y = 0;
+	Point current;
+	current.x = 0;
+	current.y = 0;
+
 	FILE *logFile;
 
 	logFile = fopen("route.log", "w");
 	fputs("Start\n", logFile);
-	fprintf(logFile, "(%d,%d)\n", current_x, current_y);
-	ShowStatus(state, current_x, current_y);
-	ShowStatus(state, current_x, current_y, logFile);
+	fprintf(logFile, "(%d,%d)\n", current.x, current.y);
+	ShowStatus(state, current);
+	ShowStatus(state, current, logFile);
 
 	while (key != ' ')// スペースで終了
 	{
 		key = getch();
 		// 通ってきた道をマーク（-1）
-		state[current_y][current_x] = -1;
+		state[current.y][current.x] = -1;
 		// 右から初めて右回りに探索
-		if (current_x != 9 && state[current_y][current_x + 1] == 0)
-			current_x++;
-		else if (current_y != 9 && state[current_y + 1][current_x] == 0)
-			current_y++;
-		else if (current_x != 0 && state[current_y][current_x - 1] == 0)
-			current_x--;
-		else if (current_y != 0 && state[current_y - 1][current_x] == 0)
-			current_y--;
+		if (current.x != 9 && state[current.y][current.x + 1] == 0)
+			current.x++;
+		else if (current.y != 9 && state[current.y + 1][current.x] == 0)
+			current.y++;
+		else if (current.x != 0 && state[current.y][current.x - 1] == 0)
+			current.x--;
+		else if (current.y != 0 && state[current.y - 1][current.x] == 0)
+			current.y--;
 		else
 			break;
-		fprintf(logFile, " -> セル(%d,%d)\n", current_x, current_y);
-		ShowStatus(state, current_x, current_y);
-		ShowStatus(state, current_x, current_y, logFile);
+		fprintf(logFile, " -> セル(%d,%d)\n", current.x, current.y);
+		ShowStatus(state, current);
+		ShowStatus(state, current, logFile);
 
 	}
 
@@ -61,7 +69,7 @@ int main(void)
 
 
 
-int ShowStatus(int state[][10], int x, int y)
+int ShowStatus(int state[][10], Point p)
 {
 	char ch;
 
@@ -75,7 +83,7 @@ int ShowStatus(int state[][10], int x, int y)
 
 		for (j = 0; j < 10; j++)
 		{
-			if (j == x && i == y)
+			if (j == p.x && i == p.y)
 				ch = '*';
 			else
 			{
@@ -105,7 +113,7 @@ int ShowStatus(int state[][10], int x, int y)
 
 	return 0;
 }
-int ShowStatus(int state[][10], int x, int y, FILE *fp)
+int ShowStatus(int state[][10], Point p, FILE *fp)
 {
 	char ch;
 	int i, j;
@@ -118,7 +126,7 @@ int ShowStatus(int state[][10], int x, int y, FILE *fp)
 
 		for (j = 0; j < 10; j++)
 		{
-			if (j == x && i == y)
+			if (j == p.x && i == p.y)
 				ch = '*';
 			else
 			{
