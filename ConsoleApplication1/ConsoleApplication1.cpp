@@ -1,8 +1,8 @@
 ﻿#include <stdio.h>
 #include <conio.h>
 
-int ShowStatus(int state[][10]);
-int ShowStatus(int state[][10], FILE *fp);
+int ShowStatus(int state[][10], int x, int y);
+int ShowStatus(int state[][10], int x, int y, FILE *fp);
 
 int main(void)
 {
@@ -12,15 +12,15 @@ int main(void)
 							{0,0,1,0,0, 0,0,0,0,0},
 							{0,0,0,1,0, 0,0,0,0,0},
 							{0,0,0,0,0, 0,0,0,0,0},
-							{0,0,0,0,0, 1,0,0,0,0},
+							{0,0,0,0,0, 1,0,0,1,0},
 
-							{0,0,0,0,0, 0,1,0,0,0},
-							{0,0,0,0,0, 0,0,1,0,0},
-							{0,0,0,0,0, 0,0,0,0,0},
+							{0,0,0,0,0, 0,1,0,1,0},
+							{0,0,0,0,0, 0,0,0,1,0},
+							{0,0,0,0,0, 0,0,0,1,0},
 							{0,0,0,0,0, 0,0,0,0,1},
 							{0,0,0,0,0, 0,0,0,0,0}
 	};
-	
+
 	int current_x = 0;
 	int current_y = 0;
 	FILE *logFile;
@@ -28,11 +28,11 @@ int main(void)
 	logFile = fopen("route.log", "w");
 	fputs("Start\n", logFile);
 	fprintf(logFile, "(%d,%d)\n", current_x, current_y);
-	
+	ShowStatus(state, current_x, current_y);
+	ShowStatus(state, current_x, current_y, logFile);
+
 	while (key != ' ')// スペースで終了
 	{
-		ShowStatus(state);
-		ShowStatus(state, logFile);
 		key = getch();
 		// 通ってきた道をマーク（-1）
 		state[current_y][current_x] = -1;
@@ -48,10 +48,11 @@ int main(void)
 		else
 			break;
 		fprintf(logFile, " -> セル(%d,%d)\n", current_x, current_y);
+		ShowStatus(state, current_x, current_y);
+		ShowStatus(state, current_x, current_y, logFile);
 
 	}
-	ShowStatus(state);
-	ShowStatus(state, logFile);
+
 
 	fclose(logFile);
 }
@@ -60,9 +61,10 @@ int main(void)
 
 
 
-int ShowStatus(int state[][10])
+int ShowStatus(int state[][10], int x, int y)
 {
 	char ch;
+
 	int i, j;
 
 	for (i = 0; i < 10; i++)
@@ -73,20 +75,25 @@ int ShowStatus(int state[][10])
 
 		for (j = 0; j < 10; j++)
 		{
-			switch (state[i][j])
+			if (j == x && i == y)
+				ch = '*';
+			else
 			{
-			case 0:
-				ch = ' ';
-				break;
-			case -1:
-				ch = 'X';
-				break;
-			case 1:
-				ch = 'O';
-				break;
-			default:
-				ch = '@';
-				break;
+				switch (state[i][j])
+				{
+				case 0:
+					ch = ' ';
+					break;
+				case -1:
+					ch = 'X';
+					break;
+				case 1:
+					ch = 'O';
+					break;
+				default:
+					ch = '@';
+					break;
+				}
 			}
 			printf("|%c", ch);
 		}
@@ -98,7 +105,7 @@ int ShowStatus(int state[][10])
 
 	return 0;
 }
-int ShowStatus(int state[][10], FILE *fp)
+int ShowStatus(int state[][10], int x, int y, FILE *fp)
 {
 	char ch;
 	int i, j;
@@ -106,33 +113,38 @@ int ShowStatus(int state[][10], FILE *fp)
 	for (i = 0; i < 10; i++)
 	{
 		for (j = 0; j < 10; j++)
-			fprintf(fp,"--");
-		fprintf(fp,"-\n");
+			fprintf(fp, "--");
+		fprintf(fp, "-\n");
 
 		for (j = 0; j < 10; j++)
 		{
-			switch (state[i][j])
+			if (j == x && i == y)
+				ch = '*';
+			else
 			{
-			case 0:
-				ch = ' ';
-				break;
-			case -1:
-				ch = 'X';
-				break;
-			case 1:
-				ch = 'O';
-				break;
-			default:
-				ch = '@';
-				break;
+				switch (state[i][j])
+				{
+				case 0:
+					ch = ' ';
+					break;
+				case -1:
+					ch = 'X';
+					break;
+				case 1:
+					ch = 'O';
+					break;
+				default:
+					ch = '@';
+					break;
+				}
 			}
-			fprintf(fp,"|%c", ch);
+			fprintf(fp, "|%c", ch);
 		}
-		fprintf(fp,"|\n");
+		fprintf(fp, "|\n");
 	}
 	for (j = 0; j < 10; j++)
-		fprintf(fp,"--");
-	fprintf(fp,"-\n");
+		fprintf(fp, "--");
+	fprintf(fp, "-\n");
 
 	return 0;
 }
