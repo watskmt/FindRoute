@@ -2,6 +2,8 @@
 #include <conio.h>
 
 int ShowStatus(int state[][10]);
+int ShowStatus(int state[][10], FILE *fp);
+
 int main(void)
 {
 	char key = 0;
@@ -30,8 +32,11 @@ int main(void)
 	while (key != ' ')// スペースで終了
 	{
 		ShowStatus(state);
+		ShowStatus(state, logFile);
 		key = getch();
+		// 通ってきた道をマーク（-1）
 		state[current_y][current_x] = -1;
+		// 右から初めて右回りに探索
 		if (current_x != 9 && state[current_y][current_x + 1] == 0)
 			current_x++;
 		else if (current_y != 9 && state[current_y + 1][current_x] == 0)
@@ -46,6 +51,7 @@ int main(void)
 
 	}
 	ShowStatus(state);
+	ShowStatus(state, logFile);
 
 	fclose(logFile);
 }
@@ -89,6 +95,44 @@ int ShowStatus(int state[][10])
 	for (j = 0; j < 10; j++)
 		printf("--");
 	printf("-\n");
+
+	return 0;
+}
+int ShowStatus(int state[][10], FILE *fp)
+{
+	char ch;
+	int i, j;
+
+	for (i = 0; i < 10; i++)
+	{
+		for (j = 0; j < 10; j++)
+			fprintf(fp,"--");
+		fprintf(fp,"-\n");
+
+		for (j = 0; j < 10; j++)
+		{
+			switch (state[i][j])
+			{
+			case 0:
+				ch = ' ';
+				break;
+			case -1:
+				ch = 'X';
+				break;
+			case 1:
+				ch = 'O';
+				break;
+			default:
+				ch = '@';
+				break;
+			}
+			fprintf(fp,"|%c", ch);
+		}
+		fprintf(fp,"|\n");
+	}
+	for (j = 0; j < 10; j++)
+		fprintf(fp,"--");
+	fprintf(fp,"-\n");
 
 	return 0;
 }
