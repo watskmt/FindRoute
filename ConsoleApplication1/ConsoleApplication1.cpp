@@ -12,6 +12,7 @@ int ShowStatus(int state[][10], Point p, FILE *fp);
 
 int main(void)
 {
+	int i;
 	char key = 0;
 	int state[10][10] = {
 							{0,1,0,0,0, 0,0,0,0,0},
@@ -24,13 +25,16 @@ int main(void)
 							{0,0,0,0,0, 0,0,0,1,0},
 							{0,0,0,0,0, 0,0,0,1,0},
 							{0,0,0,0,0, 0,0,0,0,1},
-							{0,0,0,0,0, 0,0,0,0,0}
+							{0,0,0,0,0, 0,0,0,1,0}
 	};
-
+	Point route[100];
+	int steps=0;
+	
 	Point current;
 	current.x = 0;
 	current.y = 0;
-
+	route[steps++] = current;
+	
 	FILE *logFile;
 
 	logFile = fopen("route.log", "w");
@@ -44,28 +48,57 @@ int main(void)
 		key = getch();
 		// 通ってきた道をマーク（-1）
 		state[current.y][current.x] = -1;
+
 		// 右から初めて右回りに探索
 		if (current.x != 9 && state[current.y][current.x + 1] == 0)
+		{
 			current.x++;
+			route[steps++] = current;
+		}
 		else if (current.y != 9 && state[current.y + 1][current.x] == 0)
+		{
 			current.y++;
+			route[steps++] = current;
+		}
 		else if (current.x != 0 && state[current.y][current.x - 1] == 0)
+		{
 			current.x--;
+			route[steps++] = current;
+		}
 		else if (current.y != 0 && state[current.y - 1][current.x] == 0)
+		{
 			current.y--;
+			route[steps++] = current;
+		}
 		else
-			break;
+		{
+			if (steps > 0)
+				current = route[--steps];
+			else
+				break;
+		}
+
+
 		fprintf(logFile, " -> セル(%d,%d)\n", current.x, current.y);
 		ShowStatus(state, current);
 		ShowStatus(state, current, logFile);
+		if (current.x == 9 && current.y == 9)
+		{
+			printf("Goal\n");
+			break;
+		}
+		else if(steps == 0)
+		{
+			printf("Failed\n");
+			break;
+		}
+
 
 	}
 
 
 	fclose(logFile);
 }
-
-
 
 
 
