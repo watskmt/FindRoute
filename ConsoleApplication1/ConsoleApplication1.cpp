@@ -1,4 +1,6 @@
-﻿#include <stdio.h>
+﻿// squashのためのテストー２
+
+#include <stdio.h>
 #include <conio.h>
 
 typedef struct Point
